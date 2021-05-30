@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Component from '../../Component'
 import Input from '../../Input'
-import {Ammo, AmmoHelper} from '../../AmmoLib'
+import {Ammo} from '../../AmmoLib'
 
 import DebugShapes from '../../DebugShapes'
 
@@ -49,23 +49,7 @@ export default class PlayerControls extends Component{
             if(!this.isLocked){
                 document.body.requestPointerLock();
             }
-
-            this.Shoot();
         });
-    }
-
-    Shoot(){
-        const start = new THREE.Vector3(0.0, 0.0, -1.0);
-        start.unproject(this.camera);
-        const end = new THREE.Vector3(0.0, 0.0, 1.0);
-        end.unproject(this.camera);
-
-        const hitResult = {intersectionPoint: new THREE.Vector3()};
-
-        if(AmmoHelper.CastRay(this.physicsComponent.world, start, end, hitResult)){
-            const body = Ammo.castObject( hitResult.collisionObject, Ammo.btPairCachingGhostObject );
-            body.parentEntity && body.parentEntity.Broadcast({'topic': 'hit', from: this.parent, amount: 10});
-        }
     }
 
     OnPointerlockChange = () => {

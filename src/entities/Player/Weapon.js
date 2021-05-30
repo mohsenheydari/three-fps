@@ -1,16 +1,18 @@
 import * as THREE from 'three'
 import Component from '../../Component'
 import Input from '../../Input'
+import {Ammo, AmmoHelper} from '../../AmmoLib'
 
 import DebugShapes from '../../DebugShapes'
 import WeaponFSM from './WeaponFSM';
 
 
 export default class Weapon extends Component{
-    constructor(camera, model, flash){
+    constructor(camera, model, flash, world){
         super();
         this.name = 'Weapon';
         this.camera = camera;
+        this.world = world;
         this.model = model;
         this.flash = flash;
         this.animations = {};
@@ -21,6 +23,7 @@ export default class Weapon extends Component{
         this.magAmmo = 30;
         this.ammoPerMag = 30;
         this.ammo = 100;
+        this.damage = 2;
         this.uimanager = null;
         this.reloading = false;
     }
@@ -127,6 +130,20 @@ export default class Weapon extends Component{
         this.uimanager.SetAmmo(this.magAmmo, this.ammo);
     }
 
+    Raycast(){
+        const start = new THREE.Vector3(0.0, 0.0, -1.0);
+        start.unproject(this.camera);
+        const end = new THREE.Vector3(0.0, 0.0, 1.0);
+        end.unproject(this.camera);
+
+        const hitResult = {intersectionPoint: new THREE.Vector3()};
+
+        if(AmmoHelper.CastRay(this.world, start, end, hitResult)){
+            const body = Ammo.castObject( hitResult.collisionObject, Ammo.btPairCachingGhostObject );
+            body.parentEntity && body.parentEntity.Broadcast({'topic': 'hit', from: this.parent, amount: this.damage});
+        }
+    }
+
     Shoot(t){
         if(!this.shoot){
             return;
@@ -147,6 +164,9 @@ export default class Weapon extends Component{
             this.shootTimer = this.fireRate;
             this.magAmmo = Math.max(0, this.magAmmo - 1);
             this.uimanager.SetAmmo(this.magAmmo, this.ammo);
+
+            this.Raycast();
+            this.Broadcast({topic: 'ak47_shot'});
         }
 
         this.shootTimer = Math.max(0.0, this.shootTimer - t);
