@@ -10,7 +10,7 @@
         left: 50%;
         width: 2%;
         transform: translate(-50%, -50%);
-        /*visibility: hidden;*/
+        visibility: hidden;
       }
       #ammo_container{
         position: absolute;
@@ -18,6 +18,15 @@
         bottom: 5%;
         font-size: 3em;
         color: white;
+        visibility: hidden;
+      }
+      #progress{
+        position: absolute;
+        bottom: 9%;
+        left: 0;
+        width: 0;
+        height: 2%;
+        background-color: white;
       }
     </style>
   </head>
@@ -29,6 +38,7 @@
       <span>|</span>
       <span id="max_ammo">0</span>
     </div>
+    <div id="progress"></div>
     <my-app></my-app>
   </body>
 </html>
