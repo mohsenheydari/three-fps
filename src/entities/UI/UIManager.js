@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import Component from '../../Component'
 
 export default class UIManager extends Component{
@@ -13,6 +12,7 @@ export default class UIManager extends Component{
     }
 
     Initialize(){
-
+        document.getElementById("ammo_container").style.visibility = 'visible';
+        document.getElementById("crosshair").style.visibility = 'visible';
     }
 }

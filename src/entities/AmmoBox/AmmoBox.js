@@ -3,12 +3,13 @@ import {Ammo, AmmoHelper} from '../../AmmoLib'
 
 
 export default class AmmoBox extends Component{
-    constructor(scene, model, shape){
+    constructor(scene, model, shape, physicsWorld){
         super();
         this.name = 'AmmoBox';
         this.model = model;
         this.shape = shape;
         this.scene = scene;
+        this.world = physicsWorld;
 
         this.quat = new Ammo.btQuaternion();
         this.update = true;
@@ -20,12 +21,14 @@ export default class AmmoBox extends Component{
 
         this.trigger = AmmoHelper.CreateTrigger(this.shape);
 
+        this.world.addCollisionObject(this.trigger);
         this.scene.add(this.model);
     }
 
     Disable(){
         this.update = false;
         this.scene.remove(this.model);
+        this.world.removeCollisionObject(this.trigger);
     }
 
     Update(t){

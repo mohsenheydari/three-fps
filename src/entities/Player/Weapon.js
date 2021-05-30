@@ -46,6 +46,11 @@ export default class Weapon extends Component{
         this.flash.children[0].material.blending = THREE.AdditiveBlending;
     }
 
+    AmmoPickup = (e) => {
+        this.ammo += 30;
+        this.uimanager.SetAmmo(this.magAmmo, this.ammo);
+    }
+
     Initialize(){
         const scene = this.model;
         scene.scale.set(0.05, 0.05, 0.05);
@@ -73,6 +78,9 @@ export default class Weapon extends Component{
         this.uimanager.SetAmmo(this.magAmmo, this.ammo);
 
         this.SetupInput();
+
+        //Listen to ammo pickup event
+        this.parent.RegisterEventHandler(this.AmmoPickup, "AmmoPickup");
     }
 
     SetupInput(){

@@ -41,7 +41,10 @@ import muzzleFlash from './models/muzzle_flash.glb'
 
 //Ammo box
 import ammobox from './models/ammo/AmmoBox.fbx'
-
+import ammoboxTexD from './models/ammo/AmmoBox_D.tga.png'
+import ammoboxTexN from './models/ammo/AmmoBox_N.tga.png'
+import ammoboxTexM from './models/ammo/AmmoBox_M.tga.png'
+import ammoboxTexR from './models/ammo/AmmoBox_R.tga.png'
 
 import DebugDrawer from './DebugDrawer'
 import Navmesh from './entities/Level/Navmesh'
@@ -92,9 +95,6 @@ class FPSGameApp{
     // Stats.js
     this.stats = new Stats();
     document.body.appendChild(this.stats.dom);
-
-    //const axesHelper = new THREE.AxesHelper( 5 );
-    //this.scene.add( axesHelper );
   }
 
   SetupPhysics() {
@@ -172,6 +172,10 @@ class FPSGameApp{
     promises.push(this.AddAsset(muzzleFlash, gltfLoader, "muzzleFlash"));
     //Ammo box
     promises.push(this.AddAsset(ammobox, fbxLoader, "ammobox"));
+    promises.push(this.AddAsset(ammoboxTexD, texLoader, "ammoboxTexD"));
+    promises.push(this.AddAsset(ammoboxTexN, texLoader, "ammoboxTexN"));
+    promises.push(this.AddAsset(ammoboxTexM, texLoader, "ammoboxTexM"));
+    promises.push(this.AddAsset(ammoboxTexR, texLoader, "ammoboxTexR"));
 
     await this.PromiseProgress(promises, this.OnProgress);
 
@@ -211,12 +215,18 @@ class FPSGameApp{
     //Set ammo box textures and other props
     this.assets['ammobox'].scale.set(0.01, 0.01, 0.01);
     this.assets['ammobox'].traverse(child =>{
-      if(!child.isMesh){
-        return;
-      }
-
       child.castShadow = true;
       child.receiveShadow = true;
+      
+      child.material = new THREE.MeshStandardMaterial({
+        map: this.assets['ammoboxTexD'],
+        normalMap: this.assets['ammoboxTexN'],
+        metalness: 1,
+        metalnessMap: this.assets['ammoboxTexM'],
+        roughnessMap: this.assets['ammoboxTexR'],
+        color: new THREE.Color(0.4, 0.4, 0.4)
+      });
+      
     });
 
     this.assets['ammoboxShape'] = createConvexHullShape(this.assets['ammobox']);
@@ -258,11 +268,18 @@ class FPSGameApp{
     uimanagerEntity.AddComponent(new UIManager());
     this.entityManager.Add(uimanagerEntity);
 
-    const box = new Entity();
-    box.SetName("AmmoBox1");
-    box.AddComponent(new AmmoBox(this.scene, this.assets['ammobox'], this.assets['ammoboxShape']));
-    box.SetPosition(new THREE.Vector3(0.0, 0.33, 5.0));
-    this.entityManager.Add(box);
+    const ammoLocations = [
+      [-5.0, 0.33, 10.0],
+      [5.0, 0.33, -10.0],
+    ];
+
+    ammoLocations.forEach((loc, i) => {
+      const box = new Entity();
+      box.SetName(`AmmoBox${i}`);
+      box.AddComponent(new AmmoBox(this.scene, this.assets['ammobox'].clone(), this.assets['ammoboxShape'], this.physicsWorld));
+      box.SetPosition(new THREE.Vector3(loc[0], loc[1], loc[2]));
+      this.entityManager.Add(box);
+    });
 
     this.entityManager.EndSetup();
     this.HideProgress();
