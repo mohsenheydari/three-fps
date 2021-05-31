@@ -55,6 +55,8 @@ export default class LevelSetup extends Component{
         const localInertia = new Ammo.btVector3(0,0,0);
         const rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, localInertia);
         const object = new Ammo.btRigidBody(rbInfo);
+        object.parentEntity = this.parent;
+        object.mesh = mesh;
   
         this.physicsWorld.addRigidBody(object);
     }

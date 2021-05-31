@@ -54,6 +54,7 @@ import CharacterCollision from './entities/NPC/CharacterCollision'
 import Weapon from './entities/Player/Weapon'
 import UIManager from './entities/UI/UIManager'
 import AmmoBox from './entities/AmmoBox/AmmoBox'
+import LevelBulletDecals from './entities/Level/BulletDecals'
 
 class FPSGameApp{
 
@@ -241,6 +242,7 @@ class FPSGameApp{
     levelEntity.SetName('Level');
     levelEntity.AddComponent(new LevelSetup(this.assets['level'], this.scene, this.physicsWorld));
     levelEntity.AddComponent(new Navmesh(this.scene));
+    levelEntity.AddComponent(new LevelBulletDecals(this.scene));
     this.entityManager.Add(levelEntity);
 
     const skyEntity = new Entity();

@@ -26,6 +26,8 @@ export default class Weapon extends Component{
         this.damage = 2;
         this.uimanager = null;
         this.reloading = false;
+        this.hitResult = {intersectionPoint: new THREE.Vector3(), intersectionNormal: new THREE.Vector3()};
+
     }
 
     SetAnim(name, clip){
@@ -136,11 +138,13 @@ export default class Weapon extends Component{
         const end = new THREE.Vector3(0.0, 0.0, 1.0);
         end.unproject(this.camera);
 
-        const hitResult = {intersectionPoint: new THREE.Vector3()};
-
-        if(AmmoHelper.CastRay(this.world, start, end, hitResult)){
-            const body = Ammo.castObject( hitResult.collisionObject, Ammo.btPairCachingGhostObject );
-            body.parentEntity && body.parentEntity.Broadcast({'topic': 'hit', from: this.parent, amount: this.damage});
+        
+        if(AmmoHelper.CastRay(this.world, start, end, this.hitResult)){
+            const ghostBody = Ammo.castObject( this.hitResult.collisionObject, Ammo.btPairCachingGhostObject );
+            const rigidBody = Ammo.castObject( this.hitResult.collisionObject, Ammo.btRigidBody ); 
+            const entity = ghostBody.parentEntity || rigidBody.parentEntity;
+            
+            entity && entity.Broadcast({'topic': 'hit', from: this.parent, amount: this.damage, hitResult: this.hitResult});
         }
     }
 
