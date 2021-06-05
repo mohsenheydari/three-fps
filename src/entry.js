@@ -18,38 +18,41 @@ import PlayerPhysics from './entities/Player/PlayerPhysics'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import {  FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import {  GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import {  OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import {  SkeletonUtils } from 'three/examples/jsm/utils/SkeletonUtils'
 import NpcCharacterController from './entities/NPC/CharacterController'
 
-import level from './models/level.glb'
-import mutant from './models/animations/mutant.fbx'
-import idleAnim from './models/animations/mutant breathing idle.fbx'
-import attackAnim from './models/animations/Mutant Punch.fbx'
-import walkAnim from './models/animations/mutant walking.fbx'
-import runAnim from './models/animations/mutant run.fbx'
-import dieAnim from './models/animations/mutant dying.fbx'
+import level from './assets/level.glb'
+import navmesh from './assets/navmesh.obj'
+
+import mutant from './assets/animations/mutant.fbx'
+import idleAnim from './assets/animations/mutant breathing idle.fbx'
+import attackAnim from './assets/animations/Mutant Punch.fbx'
+import walkAnim from './assets/animations/mutant walking.fbx'
+import runAnim from './assets/animations/mutant run.fbx'
+import dieAnim from './assets/animations/mutant dying.fbx'
 
 //AK47 Model and textures
-import ak47 from './models/guns/ak47/ak47.fbx'
-import ak47TexAUrl from './models/guns/ak47/weapon_ak47_D.tga.png'
-import ak47TexNUrl from './models/guns/ak47/weapon_ak47_N_S.tga.png'
-import ak47ArmAUrl from './models/guns/ak47/T_INS_Body_a.tga.png'
-import ak47ArmNUrl from './models/guns/ak47/T_INS_Body_n.tga.png'
-import ak47HandAUrl from './models/guns/ak47/T_INS_Skin_a.tga.png'
-import ak47HandNUrl from './models/guns/ak47/T_INS_Skin_n.tga.png'
-import muzzleFlash from './models/muzzle_flash.glb'
+import ak47 from './assets/guns/ak47/ak47.fbx'
+import ak47TexAUrl from './assets/guns/ak47/weapon_ak47_D.tga.png'
+import ak47TexNUrl from './assets/guns/ak47/weapon_ak47_N_S.tga.png'
+import ak47ArmAUrl from './assets/guns/ak47/T_INS_Body_a.tga.png'
+import ak47ArmNUrl from './assets/guns/ak47/T_INS_Body_n.tga.png'
+import ak47HandAUrl from './assets/guns/ak47/T_INS_Skin_a.tga.png'
+import ak47HandNUrl from './assets/guns/ak47/T_INS_Skin_n.tga.png'
+import muzzleFlash from './assets/muzzle_flash.glb'
 
 //Ammo box
-import ammobox from './models/ammo/AmmoBox.fbx'
-import ammoboxTexD from './models/ammo/AmmoBox_D.tga.png'
-import ammoboxTexN from './models/ammo/AmmoBox_N.tga.png'
-import ammoboxTexM from './models/ammo/AmmoBox_M.tga.png'
-import ammoboxTexR from './models/ammo/AmmoBox_R.tga.png'
+import ammobox from './assets/ammo/AmmoBox.fbx'
+import ammoboxTexD from './assets/ammo/AmmoBox_D.tga.png'
+import ammoboxTexN from './assets/ammo/AmmoBox_N.tga.png'
+import ammoboxTexM from './assets/ammo/AmmoBox_M.tga.png'
+import ammoboxTexR from './assets/ammo/AmmoBox_R.tga.png'
 
 //Bullet Decal
-import decalColor from './models/decals/decal_c.jpg'
-import decalNormal from './models/decals/decal_n.jpg'
-import decalAlpha from './models/decals/decal_a.jpg'
+import decalColor from './assets/decals/decal_c.jpg'
+import decalNormal from './assets/decals/decal_n.jpg'
+import decalAlpha from './assets/decals/decal_a.jpg'
 
 import DebugDrawer from './DebugDrawer'
 import Navmesh from './entities/Level/Navmesh'
@@ -155,11 +158,13 @@ class FPSGameApp{
   async LoadAssets(){
     const gltfLoader = new GLTFLoader();
     const fbxLoader = new FBXLoader();
+    const objLoader = new OBJLoader();
     const texLoader = new THREE.TextureLoader();
     const promises = [];
 
     //Level
     promises.push(this.AddAsset(level, gltfLoader, "level"));
+    promises.push(this.AddAsset(navmesh, objLoader, "navmesh"));
     //Mutant
     promises.push(this.AddAsset(mutant, fbxLoader, "mutant"));
     promises.push(this.AddAsset(idleAnim, fbxLoader, "idleAnim"));
@@ -251,7 +256,7 @@ class FPSGameApp{
     const levelEntity = new Entity();
     levelEntity.SetName('Level');
     levelEntity.AddComponent(new LevelSetup(this.assets['level'], this.scene, this.physicsWorld));
-    levelEntity.AddComponent(new Navmesh(this.scene));
+    levelEntity.AddComponent(new Navmesh(this.scene, this.assets['navmesh']));
     levelEntity.AddComponent(new LevelBulletDecals(this.scene, this.assets['decalColor'], this.assets['decalNormal'], this.assets['decalAlpha']));
     this.entityManager.Add(levelEntity);
 
