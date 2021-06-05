@@ -8,7 +8,7 @@ import WeaponFSM from './WeaponFSM';
 
 
 export default class Weapon extends Component{
-    constructor(camera, model, flash, world){
+    constructor(camera, model, flash, world, shotSoundBuffer, listner){
         super();
         this.name = 'Weapon';
         this.camera = camera;
@@ -19,6 +19,9 @@ export default class Weapon extends Component{
         this.shoot = false;
         this.fireRate = 0.1;
         this.shootTimer = 0.0;
+
+        this.shotSoundBuffer = shotSoundBuffer;
+        this.audioListner = listner;
 
         this.magAmmo = 30;
         this.ammoPerMag = 30;
@@ -51,6 +54,12 @@ export default class Weapon extends Component{
         this.flash.children[0].material.blending = THREE.AdditiveBlending;
     }
 
+    SetSoundEffect(){
+        this.shotSound = new THREE.Audio(this.audioListner);
+        this.shotSound.setBuffer(this.shotSoundBuffer);
+        this.shotSound.setLoop(false);
+    }
+
     AmmoPickup = (e) => {
         this.ammo += 30;
         this.uimanager.SetAmmo(this.magAmmo, this.ammo);
@@ -75,6 +84,7 @@ export default class Weapon extends Component{
 
         this.SetAnimations();
         this.SetMuzzleFlash();
+        this.SetSoundEffect();
 
         this.stateMachine = new WeaponFSM(this);
         this.stateMachine.SetState('idle');
@@ -171,6 +181,9 @@ export default class Weapon extends Component{
 
             this.Raycast();
             this.Broadcast({topic: 'ak47_shot'});
+            
+            this.shotSound.isPlaying && this.shotSound.stop();
+            this.shotSound.play();
         }
 
         this.shootTimer = Math.max(0.0, this.shootTimer - t);

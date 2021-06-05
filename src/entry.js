@@ -41,6 +41,8 @@ import ak47ArmNUrl from './assets/guns/ak47/T_INS_Body_n.tga.png'
 import ak47HandAUrl from './assets/guns/ak47/T_INS_Skin_a.tga.png'
 import ak47HandNUrl from './assets/guns/ak47/T_INS_Skin_n.tga.png'
 import muzzleFlash from './assets/muzzle_flash.glb'
+//Shot sound
+import ak47Shot from './assets/sounds/ak47_shot.wav'
 
 //Ammo box
 import ammobox from './assets/ammo/AmmoBox.fbx'
@@ -92,6 +94,10 @@ class FPSGameApp{
 		this.renderer.outputEncoding = THREE.sRGBEncoding;
 
     this.scene.add(this.camera);
+
+    // create an AudioListener and add it to the camera
+    this.listener = new THREE.AudioListener();
+    this.camera.add( this.listener );
 
     // renderer
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -159,6 +165,7 @@ class FPSGameApp{
     const gltfLoader = new GLTFLoader();
     const fbxLoader = new FBXLoader();
     const objLoader = new OBJLoader();
+    const audioLoader = new THREE.AudioLoader();
     const texLoader = new THREE.TextureLoader();
     const promises = [];
 
@@ -181,6 +188,7 @@ class FPSGameApp{
     promises.push(this.AddAsset(ak47HandAUrl, texLoader, "ak47HandTexA"));
     promises.push(this.AddAsset(ak47HandNUrl, texLoader, "ak47HandTexN"));
     promises.push(this.AddAsset(muzzleFlash, gltfLoader, "muzzleFlash"));
+    promises.push(this.AddAsset(ak47Shot, audioLoader, "ak47Shot"));
     //Ammo box
     promises.push(this.AddAsset(ammobox, fbxLoader, "ammobox"));
     promises.push(this.AddAsset(ammoboxTexD, texLoader, "ammoboxTexD"));
@@ -269,7 +277,7 @@ class FPSGameApp{
     playerEntity.SetName("Player");
     playerEntity.AddComponent(new PlayerPhysics(this.physicsWorld, Ammo));
     playerEntity.AddComponent(new PlayerControls(this.camera, this.scene));
-    playerEntity.AddComponent(new Weapon(this.camera, this.assets['ak47'], this.assets['muzzleFlash'], this.physicsWorld ));
+    playerEntity.AddComponent(new Weapon(this.camera, this.assets['ak47'], this.assets['muzzleFlash'], this.physicsWorld, this.assets['ak47Shot'], this.listener ));
     this.entityManager.Add(playerEntity);
 
     const npcEntity = new Entity();
