@@ -46,6 +46,11 @@ import ammoboxTexN from './models/ammo/AmmoBox_N.tga.png'
 import ammoboxTexM from './models/ammo/AmmoBox_M.tga.png'
 import ammoboxTexR from './models/ammo/AmmoBox_R.tga.png'
 
+//Bullet Decal
+import decalColor from './models/decals/decal_c.jpg'
+import decalNormal from './models/decals/decal_n.jpg'
+import decalAlpha from './models/decals/decal_a.jpg'
+
 import DebugDrawer from './DebugDrawer'
 import Navmesh from './entities/Level/Navmesh'
 import AttackTrigger from './entities/NPC/AttackTrigger'
@@ -178,6 +183,11 @@ class FPSGameApp{
     promises.push(this.AddAsset(ammoboxTexM, texLoader, "ammoboxTexM"));
     promises.push(this.AddAsset(ammoboxTexR, texLoader, "ammoboxTexR"));
 
+    //Decal
+    promises.push(this.AddAsset(decalColor, texLoader, "decalColor"));
+    promises.push(this.AddAsset(decalNormal, texLoader, "decalNormal"));
+    promises.push(this.AddAsset(decalAlpha, texLoader, "decalAlpha"));
+
     await this.PromiseProgress(promises, this.OnProgress);
 
     this.assets['level'] = this.assets['level'].scene;
@@ -242,7 +252,7 @@ class FPSGameApp{
     levelEntity.SetName('Level');
     levelEntity.AddComponent(new LevelSetup(this.assets['level'], this.scene, this.physicsWorld));
     levelEntity.AddComponent(new Navmesh(this.scene));
-    levelEntity.AddComponent(new LevelBulletDecals(this.scene));
+    levelEntity.AddComponent(new LevelBulletDecals(this.scene, this.assets['decalColor'], this.assets['decalNormal'], this.assets['decalAlpha']));
     this.entityManager.Add(levelEntity);
 
     const skyEntity = new Entity();

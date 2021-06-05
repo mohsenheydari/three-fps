@@ -5,7 +5,7 @@ import {  DecalGeometry  } from 'three/examples/jsm/geometries/DecalGeometry'
 
 
 export default class LevelBulletDecals extends Component{
-    constructor(scene){
+    constructor(scene, colorMap, normalMap, alphaMap){
         super();
         this.name = "LevelBulletDecals";
         this.scene = scene;
@@ -16,12 +16,15 @@ export default class LevelBulletDecals extends Component{
         this.position = new THREE.Vector3(0,0,0);
         this.up =  new THREE.Vector3(0,1,0);
         this.scale = new THREE.Vector3(1,1,1);
-        this.material = new THREE.MeshBasicMaterial( { 
-            color: 0x00ff00, 
+        this.material = new THREE.MeshStandardMaterial( { 
             depthTest: true,
             depthWrite: false,
             polygonOffset: true,
             polygonOffsetFactor: - 4,
+            alphaMap,
+            normalMap,
+            map: colorMap,
+            transparent: true,
         } );
     }
 
@@ -29,6 +32,9 @@ export default class LevelBulletDecals extends Component{
         this.mat4.lookAt(this.position, e.hitResult.intersectionNormal, this.up);
         this.rot.setFromRotationMatrix(this.mat4);
         
+        const size = Math.random() * 0.3 + 0.2;
+        this.scale.set(size, size, 1.0);
+
         const rigidBody = Ammo.castObject( e.hitResult.collisionObject, Ammo.btRigidBody ); 
         const mesh = rigidBody.mesh;
 
