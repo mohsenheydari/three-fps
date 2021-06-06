@@ -162,6 +162,7 @@ class AttackState extends State{
     Enter(prevState){
         const action = this.Animation.action;
         this.attackTime = this.Animation.clip.duration;
+        this.attackEvent = this.Animation.clip.duration * 0.8;
 
         if(prevState){
             action.time = 0.0;
@@ -180,14 +181,14 @@ class AttackState extends State{
             return;
         }
 
-        if(this.canHit && this.parent.proxy.IsPlayerInHitbox){
+        if(this.canHit && this.attackTime <= this.attackEvent && this.parent.proxy.IsPlayerInHitbox){
             this.parent.proxy.HitPlayer();
             this.canHit = false;
         }
 
         if(this.attackTime <= 0.0){
             this.attackTime = this.Animation.clip.duration;
-            this.canHit = true; 
+            this.canHit = true;
         }
 
         this.attackTime -= t;

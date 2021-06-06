@@ -11,8 +11,11 @@ export default class UIManager extends Component{
         document.getElementById("max_ammo").innerText = rest;
     }
 
+    SetHealth(health){
+        document.getElementById("health_progress").style.width = `${health}%`;
+    }
+
     Initialize(){
-        document.getElementById("ammo_container").style.visibility = 'visible';
-        document.getElementById("crosshair").style.visibility = 'visible';
+        document.getElementById("game_hud").style.visibility = 'visible';
     }
 }

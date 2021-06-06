@@ -10,7 +10,6 @@
         left: 50%;
         width: 2%;
         transform: translate(-50%, -50%);
-        visibility: hidden;
       }
       #ammo_container{
         position: absolute;
@@ -18,7 +17,6 @@
         bottom: 5%;
         font-size: 3em;
         color: white;
-        visibility: hidden;
       }
       #progress{
         position: absolute;
@@ -28,16 +26,39 @@
         height: 2%;
         background-color: white;
       }
+      #health_container{
+        position: absolute;
+        bottom: 8%;
+        left: 5%;
+        width: 18%;
+        height: 2%;
+        border: 1px solid #ffffff;
+      }
+      #health_progress{
+        position: absolute;
+        background-color: #ffffff;
+        width: 100%;
+        height: 100%;
+      }
+      #game_hud{
+        visibility: hidden;
+      }
     </style>
   </head>
 
   <body style="margin: 0;">
-    <img id="crosshair" src="<%=require('./ui/crosshair.png')%>" />
-    <div id="ammo_container">
-      <span id="current_ammo">0</span>
-      <span>|</span>
-      <span id="max_ammo">0</span>
+    <div id="game_hud">
+      <img id="crosshair" src="<%=require('./ui/crosshair.png')%>" />
+      <div id="ammo_container">
+        <span id="current_ammo">0</span>
+        <span>|</span>
+        <span id="max_ammo">0</span>
+      </div>
+      <div id="health_container">
+        <div id="health_progress"></div>
+      </div>
     </div>
+    
     <div id="progress"></div>
     <my-app></my-app>
   </body>

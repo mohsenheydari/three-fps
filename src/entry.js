@@ -65,6 +65,7 @@ import Weapon from './entities/Player/Weapon'
 import UIManager from './entities/UI/UIManager'
 import AmmoBox from './entities/AmmoBox/AmmoBox'
 import LevelBulletDecals from './entities/Level/BulletDecals'
+import PlayerHealth from './entities/Player/PlayerHealth'
 
 class FPSGameApp{
 
@@ -278,6 +279,7 @@ class FPSGameApp{
     playerEntity.AddComponent(new PlayerPhysics(this.physicsWorld, Ammo));
     playerEntity.AddComponent(new PlayerControls(this.camera, this.scene));
     playerEntity.AddComponent(new Weapon(this.camera, this.assets['ak47'], this.assets['muzzleFlash'], this.physicsWorld, this.assets['ak47Shot'], this.listener ));
+    playerEntity.AddComponent(new PlayerHealth());
     this.entityManager.Add(playerEntity);
 
     const npcEntity = new Entity();

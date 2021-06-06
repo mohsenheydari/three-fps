@@ -3,7 +3,6 @@ import Component from '../../Component'
 import {Ammo, AmmoHelper} from '../../AmmoLib'
 import CharacterFSM from './CharacterFSM'
 
-import Input from '../../Input'
 import DebugShapes from '../../DebugShapes'
 
 
@@ -152,7 +151,7 @@ export default class CharacterController extends Component{
     }
 
     HitPlayer(){
-        console.log('Hit Player!');
+        this.player.Broadcast({topic: 'hit'});
     }
 
     TakeHit = msg => {
