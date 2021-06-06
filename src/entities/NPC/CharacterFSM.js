@@ -50,9 +50,9 @@ class IdleState extends State{
 
         this.waitTime -= t;
 
-        //if(this.parent.proxy.CanSeeThePlayer()){
-        //    this.parent.SetState('chase');
-        //}
+        if(this.parent.proxy.CanSeeThePlayer()){
+            this.parent.SetState('chase');
+        }
     }
 }
 
@@ -88,9 +88,9 @@ class PatrolState extends State{
             return;
         }
 
-        //if(this.parent.proxy.CanSeeThePlayer()){
-        //    this.parent.SetState('chase');
-        //}
+        if(this.parent.proxy.CanSeeThePlayer()){
+            this.parent.SetState('chase');
+        }
     }
 }
 

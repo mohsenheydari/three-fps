@@ -1,5 +1,5 @@
 import Component from '../../Component'
-import {Ammo, AmmoHelper} from '../../AmmoLib'
+import {Ammo, AmmoHelper, CollisionFilterGroups} from '../../AmmoLib'
 
 
 export default class AmmoBox extends Component{
@@ -21,7 +21,7 @@ export default class AmmoBox extends Component{
 
         this.trigger = AmmoHelper.CreateTrigger(this.shape);
 
-        this.world.addCollisionObject(this.trigger);
+        this.world.addCollisionObject(this.trigger, CollisionFilterGroups.SensorTrigger);
         this.scene.add(this.model);
     }
 

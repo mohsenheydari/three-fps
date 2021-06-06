@@ -1,5 +1,5 @@
 import Component from '../../Component'
-import {Ammo, AmmoHelper} from '../../AmmoLib'
+import {Ammo, AmmoHelper, CollisionFilterGroups} from '../../AmmoLib'
 
 export default class AttackTrigger extends Component{
     constructor(physicsWorld){
@@ -21,7 +21,7 @@ export default class AttackTrigger extends Component{
         const shape = new Ammo.btSphereShape(0.4);
         this.ghostObj = AmmoHelper.CreateTrigger(shape);
 
-        this.physicsWorld.addCollisionObject(this.ghostObj);
+        this.physicsWorld.addCollisionObject(this.ghostObj, CollisionFilterGroups.SensorTrigger);
     }
 
     Initialize(){

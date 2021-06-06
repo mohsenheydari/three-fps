@@ -1,9 +1,8 @@
 import * as THREE from 'three'
 import Component from '../../Component'
 import Input from '../../Input'
-import {Ammo, AmmoHelper} from '../../AmmoLib'
+import {Ammo, AmmoHelper, CollisionFilterGroups} from '../../AmmoLib'
 
-import DebugShapes from '../../DebugShapes'
 import WeaponFSM from './WeaponFSM';
 
 
@@ -148,8 +147,9 @@ export default class Weapon extends Component{
         const end = new THREE.Vector3(0.0, 0.0, 1.0);
         end.unproject(this.camera);
 
+        const collisionMask = CollisionFilterGroups.AllFilter & ~CollisionFilterGroups.SensorTrigger;
         
-        if(AmmoHelper.CastRay(this.world, start, end, this.hitResult)){
+        if(AmmoHelper.CastRay(this.world, start, end, this.hitResult, collisionMask)){
             const ghostBody = Ammo.castObject( this.hitResult.collisionObject, Ammo.btPairCachingGhostObject );
             const rigidBody = Ammo.castObject( this.hitResult.collisionObject, Ammo.btRigidBody ); 
             const entity = ghostBody.parentEntity || rigidBody.parentEntity;

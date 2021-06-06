@@ -8,6 +8,15 @@ let rayDest = null;
 let closestRayResultCallback = null;
 
 const CollisionFlags = { CF_NO_CONTACT_RESPONSE: 4 }
+const CollisionFilterGroups = { 
+  DefaultFilter: 1,
+  StaticFilter: 2,
+  KinematicFilter: 4,
+  DebrisFilter: 8,
+  SensorTrigger: 16,
+  CharacterFilter: 32,
+  AllFilter: -1 //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
+};
 
 function createConvexHullShape(object) {
     const geometry = createConvexGeom(object);
@@ -82,7 +91,7 @@ class AmmoHelper{
     return false;
   }
 
-  static CastRay(world, origin, dest, result={}){
+  static CastRay(world, origin, dest, result={}, collisionFilterMask=CollisionFilterGroups.AllFilter){
     if(!rayOrigin){
         rayOrigin = new Ammo.btVector3();
         rayDest = new Ammo.btVector3();
@@ -93,6 +102,8 @@ class AmmoHelper{
     const rayCallBack = Ammo.castObject( closestRayResultCallback, Ammo.RayResultCallback );
     rayCallBack.set_m_closestHitFraction( 1 );
     rayCallBack.set_m_collisionObject( null );
+
+    rayCallBack.m_collisionFilterMask = collisionFilterMask;
   
     // Set closestRayResultCallback origin and dest
     rayOrigin.setValue( origin.x, origin.y, origin.z );
@@ -125,4 +136,4 @@ class AmmoHelper{
 
 }
 
-export {AmmoHelper, Ammo, createConvexHullShape, CollisionFlags}
+export {AmmoHelper, Ammo, createConvexHullShape, CollisionFlags, CollisionFilterGroups}
