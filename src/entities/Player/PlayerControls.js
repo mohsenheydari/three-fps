@@ -7,14 +7,14 @@ import DebugShapes from '../../DebugShapes'
 
 
 export default class PlayerControls extends Component{
-    constructor(camera, scene){
+    constructor(camera){
         super();
         this.name = 'PlayerControls';
         this.camera = camera;
 
-        this.timeZeroToMax = 0.1;
+        this.timeZeroToMax = 0.08;
 
-        this.maxSpeed = 10.0;
+        this.maxSpeed = 7.0;
         this.speed = new THREE.Vector3();
         this.acceleration = this.maxSpeed / this.timeZeroToMax;
         this.decceleration = -7.0;
@@ -27,7 +27,7 @@ export default class PlayerControls extends Component{
         this.pitch = new THREE.Quaternion();
         this.yaw = new THREE.Quaternion();
 
-        this.jumpVelocity = 7;
+        this.jumpVelocity = 5;
         this.yOffset = 0.5;
         this.tempVec = new THREE.Vector3();
         this.moveDir = new THREE.Vector3();

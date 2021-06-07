@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import Component from '../../Component'
-import {Ammo, AmmoHelper} from '../../AmmoLib'
+import {Ammo, AmmoHelper, CollisionFilterGroups} from '../../AmmoLib'
 import CharacterFSM from './CharacterFSM'
 
 import DebugShapes from '../../DebugShapes'
@@ -23,10 +23,11 @@ export default class CharacterController extends Component{
         this.tempRot = new THREE.Quaternion();
 
         this.viewAngle = Math.cos(Math.PI / 4.0);
-        this.maxViewDistance = 10.0 * 10.0;
+        this.maxViewDistance = 20.0 * 20.0;
         this.tempVec = new THREE.Vector3();
-        this.attackDistance = 2.0;
+        this.attackDistance = 2.2;
 
+        this.canMove = true;
         this.health = 100;
     }
 
@@ -97,8 +98,9 @@ export default class CharacterController extends Component{
         }
 
         const rayInfo = {};
-
-        if(AmmoHelper.CastRay(this.physicsWorld, modelPos, this.player.Position, rayInfo)){
+        const collisionMask = CollisionFilterGroups.AllFilter & ~CollisionFilterGroups.SensorTrigger;
+        
+        if(AmmoHelper.CastRay(this.physicsWorld, modelPos, this.player.Position, rayInfo, collisionMask)){
             const body = Ammo.castObject( rayInfo.collisionObject, Ammo.btRigidBody );
 
             if(body == this.player.GetComponent('PlayerPhysics').body){
@@ -119,12 +121,14 @@ export default class CharacterController extends Component{
         this.tempVec.y = 0.5;
         this.path = this.navmesh.FindPath(this.model.position, this.tempVec);
 
+        /*
         if(this.path){
             this.pathDebug.Clear();
             for(const point of this.path){
                 this.pathDebug.AddPoint(point, "blue");
             }
         }
+        */
     }
 
     FacePlayer(t, rate = 3.0){
@@ -155,13 +159,15 @@ export default class CharacterController extends Component{
     }
 
     TakeHit = msg => {
-        console.log(msg);
-
         this.health = Math.max(0, this.health - msg.amount);
-        document.title = this.health;
 
         if(this.health == 0){
             this.stateMachine.SetState('dead');
+        }else{
+            const stateName = this.stateMachine.currentState.Name;
+            if(stateName == 'idle' || stateName == 'patrol'){
+                this.stateMachine.SetState('chase');
+            }
         }
     }
 
@@ -192,16 +198,19 @@ export default class CharacterController extends Component{
     }
 
     ApplyRootMotion(){
-        const vel = this.rootBone.position.clone();
-        vel.sub(this.lastPos).multiplyScalar(0.01);
-        vel.y = 0;
+        if(this.canMove){
+            const vel = this.rootBone.position.clone();
+            vel.sub(this.lastPos).multiplyScalar(0.01);
+            vel.y = 0;
 
-        vel.applyQuaternion(this.model.quaternion);
+            vel.applyQuaternion(this.model.quaternion);
 
-        if(vel.lengthSq() < 0.1 * 0.1){
-            this.model.position.add(vel);
+            if(vel.lengthSq() < 0.1 * 0.1){
+                this.model.position.add(vel);
+            }
         }
-        
+
+        //Reset the root bone horizontal position
         this.lastPos.copy(this.rootBone.position);
         this.rootBone.position.z = this.rootBone.refPos.z;
         this.rootBone.position.x = this.rootBone.refPos.x;

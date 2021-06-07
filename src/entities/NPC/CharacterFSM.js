@@ -29,6 +29,7 @@ class IdleState extends State{
     get Animation(){return this.parent.proxy.animations['idle']; }
 
     Enter(prevState){
+        this.parent.proxy.canMove = false;
         const action = this.Animation.action;
 
         if(prevState){
@@ -69,6 +70,7 @@ class PatrolState extends State{
     }
 
     Enter(prevState){
+        this.parent.proxy.canMove = true;
         const action = this.Animation.action;
 
         if(prevState){
@@ -83,13 +85,10 @@ class PatrolState extends State{
     }
 
     Update(t){
-        if(this.parent.proxy.path && this.parent.proxy.path.length == 0){
-            this.parent.SetState('idle');
-            return;
-        }
-
         if(this.parent.proxy.CanSeeThePlayer()){
             this.parent.SetState('chase');
+        }else if(this.parent.proxy.path && this.parent.proxy.path.length == 0){
+            this.parent.SetState('idle');
         }
     }
 }
@@ -101,13 +100,14 @@ class ChaseState extends State{
         this.updateTimer = 0.0;
         this.attackDistance = 2.0;
         this.shouldRotate = false;
-        this.switchDelay = 0.1;
+        this.switchDelay = 0.2;
     }
 
     get Name(){return 'chase'}
     get Animation(){return this.parent.proxy.animations['run']; }
 
     RunToPlayer(prevState){
+        this.parent.proxy.canMove = true;
         const action = this.Animation.action;
         this.updateTimer = 0.0;
         
@@ -152,7 +152,6 @@ class AttackState extends State{
     constructor(parent){
         super(parent);
         this.attackTime = 0.0;
-        this.tempVec = new THREE.Vector3();
         this.canHit = true;
     }
 
@@ -160,9 +159,10 @@ class AttackState extends State{
     get Animation(){return this.parent.proxy.animations['attack']; }
 
     Enter(prevState){
+        this.parent.proxy.canMove = false;
         const action = this.Animation.action;
         this.attackTime = this.Animation.clip.duration;
-        this.attackEvent = this.attackTime * 0.8;
+        this.attackEvent = this.attackTime * 0.85;
 
         if(prevState){
             action.time = 0.0;
