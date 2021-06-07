@@ -50,7 +50,7 @@ export default class CharacterController extends Component{
         const scene = this.model;
 
         scene.scale.setScalar(0.01);
-        scene.position.set(-1, 0.3, 5);
+        scene.position.copy(this.parent.position);
         
         this.mixer = new THREE.AnimationMixer( scene );
 

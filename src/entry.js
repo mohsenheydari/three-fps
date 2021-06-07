@@ -50,6 +50,8 @@ import ammoboxTexD from './assets/ammo/AmmoBox_D.tga.png'
 import ammoboxTexN from './assets/ammo/AmmoBox_N.tga.png'
 import ammoboxTexM from './assets/ammo/AmmoBox_M.tga.png'
 import ammoboxTexR from './assets/ammo/AmmoBox_R.tga.png'
+import ammoboxTexAO from './assets/ammo/AmmoBox_AO.tga.png'
+
 
 //Bullet Decal
 import decalColor from './assets/decals/decal_c.jpg'
@@ -196,7 +198,7 @@ class FPSGameApp{
     promises.push(this.AddAsset(ammoboxTexN, texLoader, "ammoboxTexN"));
     promises.push(this.AddAsset(ammoboxTexM, texLoader, "ammoboxTexM"));
     promises.push(this.AddAsset(ammoboxTexR, texLoader, "ammoboxTexR"));
-
+    promises.push(this.AddAsset(ammoboxTexAO, texLoader, "ammoboxTexAO"));
     //Decal
     promises.push(this.AddAsset(decalColor, texLoader, "decalColor"));
     promises.push(this.AddAsset(decalNormal, texLoader, "decalNormal"));
@@ -245,6 +247,7 @@ class FPSGameApp{
       
       child.material = new THREE.MeshStandardMaterial({
         map: this.assets['ammoboxTexD'],
+        aoMap: this.assets['ammoboxTexAO'],
         normalMap: this.assets['ammoboxTexN'],
         metalness: 1,
         metalnessMap: this.assets['ammoboxTexM'],
@@ -282,13 +285,22 @@ class FPSGameApp{
     playerEntity.AddComponent(new PlayerHealth());
     this.entityManager.Add(playerEntity);
 
-    const npcEntity = new Entity();
-    npcEntity.SetName("Mutant1");
-    npcEntity.AddComponent(new NpcCharacterController(SkeletonUtils.clone(this.assets['mutant']), this.mutantAnims, this.scene, this.physicsWorld));
-    npcEntity.AddComponent(new AttackTrigger(this.physicsWorld));
-    npcEntity.AddComponent(new CharacterCollision(this.physicsWorld));
-    npcEntity.AddComponent(new DirectionDebug(this.scene));
-    this.entityManager.Add(npcEntity);
+    const npcLocations = [
+      [-22.5, 0.3, -21.9],
+      //[-16, 0.3, 0.61],
+      //[19.91, 0.3, 1.32],
+    ];
+
+    npcLocations.forEach((v,i)=>{
+      const npcEntity = new Entity();
+      npcEntity.SetPosition(new THREE.Vector3(v[0], v[1], v[2]));
+      npcEntity.SetName(`Mutant${i}`);
+      npcEntity.AddComponent(new NpcCharacterController(SkeletonUtils.clone(this.assets['mutant']), this.mutantAnims, this.scene, this.physicsWorld));
+      npcEntity.AddComponent(new AttackTrigger(this.physicsWorld));
+      npcEntity.AddComponent(new CharacterCollision(this.physicsWorld));
+      npcEntity.AddComponent(new DirectionDebug(this.scene));
+      this.entityManager.Add(npcEntity);
+    });
 
     const uimanagerEntity = new Entity();
     uimanagerEntity.SetName("UIManager");
@@ -310,6 +322,7 @@ class FPSGameApp{
 
     this.entityManager.EndSetup();
     this.HideProgress();
+
     window.requestAnimationFrame(this.OnAnimationFrameHandler);
   }
 

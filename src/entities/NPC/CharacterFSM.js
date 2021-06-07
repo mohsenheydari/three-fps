@@ -162,7 +162,7 @@ class AttackState extends State{
     Enter(prevState){
         const action = this.Animation.action;
         this.attackTime = this.Animation.clip.duration;
-        this.attackEvent = this.Animation.clip.duration * 0.8;
+        this.attackEvent = this.attackTime * 0.8;
 
         if(prevState){
             action.time = 0.0;
