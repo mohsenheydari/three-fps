@@ -33,13 +33,7 @@ import runAnim from './assets/animations/mutant run.fbx'
 import dieAnim from './assets/animations/mutant dying.fbx'
 
 //AK47 Model and textures
-import ak47 from './assets/guns/ak47/ak47.fbx'
-import ak47TexAUrl from './assets/guns/ak47/weapon_ak47_D.tga.png'
-import ak47TexNUrl from './assets/guns/ak47/weapon_ak47_N_S.tga.png'
-import ak47ArmAUrl from './assets/guns/ak47/T_INS_Body_a.tga.png'
-import ak47ArmNUrl from './assets/guns/ak47/T_INS_Body_n.tga.png'
-import ak47HandAUrl from './assets/guns/ak47/T_INS_Skin_a.tga.png'
-import ak47HandNUrl from './assets/guns/ak47/T_INS_Skin_n.tga.png'
+import ak47 from './assets/guns/ak47/ak47.glb'
 import muzzleFlash from './assets/muzzle_flash.glb'
 //Shot sound
 import ak47Shot from './assets/sounds/ak47_shot.wav'
@@ -183,13 +177,7 @@ class FPSGameApp{
     promises.push(this.AddAsset(attackAnim, fbxLoader, "attackAnim"));
     promises.push(this.AddAsset(dieAnim, fbxLoader, "dieAnim"));
     //AK47
-    promises.push(this.AddAsset(ak47, fbxLoader, "ak47"));
-    promises.push(this.AddAsset(ak47TexAUrl, texLoader, "ak47TexA"));
-    promises.push(this.AddAsset(ak47TexNUrl, texLoader, "ak47TexN"));
-    promises.push(this.AddAsset(ak47ArmAUrl, texLoader, "ak47ArmTexA"));
-    promises.push(this.AddAsset(ak47ArmNUrl, texLoader, "ak47ArmTexN"));
-    promises.push(this.AddAsset(ak47HandAUrl, texLoader, "ak47HandTexA"));
-    promises.push(this.AddAsset(ak47HandNUrl, texLoader, "ak47HandTexN"));
+    promises.push(this.AddAsset(ak47, gltfLoader, "ak47"));
     promises.push(this.AddAsset(muzzleFlash, gltfLoader, "muzzleFlash"));
     promises.push(this.AddAsset(ak47Shot, audioLoader, "ak47Shot"));
     //Ammo box
@@ -217,27 +205,7 @@ class FPSGameApp{
     this.SetAnim('attack', this.assets['attackAnim']);
     this.SetAnim('die', this.assets['dieAnim']);
 
-    //Set textures for AK47 and hand model
-    this.assets['ak47'].traverse(child=>{
-      if(child.name == "SMDImport"){
-        child.material.map = this.assets['ak47TexA'];
-        child.material.normalMap = this.assets['ak47TexN'];
-      }
-
-      if(child.name == "SkeletalMeshComponent0"){
-        child.material.forEach(mat => {
-          if(mat.name=='arm'){
-            mat.map = this.assets['ak47ArmTexA'];
-            mat.normalMap = this.assets['ak47ArmTexN'];
-          }
-
-          if(mat.name=='hand'){
-            mat.map = this.assets['ak47HandTexA'];
-            mat.normalMap = this.assets['ak47HandTexN'];
-          }
-        });
-      }
-    });
+    this.assets['ak47'].scene.animations = this.assets['ak47'].animations;
     
     //Set ammo box textures and other props
     this.assets['ammobox'].scale.set(0.01, 0.01, 0.01);
@@ -281,7 +249,7 @@ class FPSGameApp{
     playerEntity.SetName("Player");
     playerEntity.AddComponent(new PlayerPhysics(this.physicsWorld, Ammo));
     playerEntity.AddComponent(new PlayerControls(this.camera, this.scene));
-    playerEntity.AddComponent(new Weapon(this.camera, this.assets['ak47'], this.assets['muzzleFlash'], this.physicsWorld, this.assets['ak47Shot'], this.listener ));
+    playerEntity.AddComponent(new Weapon(this.camera, this.assets['ak47'].scene, this.assets['muzzleFlash'], this.physicsWorld, this.assets['ak47Shot'], this.listener ));
     playerEntity.AddComponent(new PlayerHealth());
     this.entityManager.Add(playerEntity);
 

@@ -39,8 +39,8 @@ export default class Weapon extends Component{
 
     SetAnimations(){
         this.mixer = new THREE.AnimationMixer( this.model );
-        this.SetAnim('idle', this.model.animations[2]);
-        this.SetAnim('reload', this.model.animations[5]);
+        this.SetAnim('idle', this.model.animations[1]);
+        this.SetAnim('reload', this.model.animations[2]);
         this.SetAnim('shoot', this.model.animations[0]);
     }
 
