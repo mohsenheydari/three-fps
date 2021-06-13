@@ -46,11 +46,13 @@ import ammoboxTexM from './assets/ammo/AmmoBox_M.tga.png'
 import ammoboxTexR from './assets/ammo/AmmoBox_R.tga.png'
 import ammoboxTexAO from './assets/ammo/AmmoBox_AO.tga.png'
 
-
 //Bullet Decal
 import decalColor from './assets/decals/decal_c.jpg'
 import decalNormal from './assets/decals/decal_n.jpg'
 import decalAlpha from './assets/decals/decal_a.jpg'
+
+//Sky
+import skyTex from './assets/sky.jpg'
 
 import DebugDrawer from './DebugDrawer'
 import Navmesh from './entities/Level/Navmesh'
@@ -192,6 +194,8 @@ class FPSGameApp{
     promises.push(this.AddAsset(decalNormal, texLoader, "decalNormal"));
     promises.push(this.AddAsset(decalAlpha, texLoader, "decalAlpha"));
 
+    promises.push(this.AddAsset(skyTex, texLoader, "skyTex"));
+
     await this.PromiseProgress(promises, this.OnProgress);
 
     this.assets['level'] = this.assets['level'].scene;
@@ -242,7 +246,7 @@ class FPSGameApp{
 
     const skyEntity = new Entity();
     skyEntity.SetName("Sky");
-    skyEntity.AddComponent(new Sky(this.scene));
+    skyEntity.AddComponent(new Sky(this.scene, this.assets['skyTex']));
     this.entityManager.Add(skyEntity);
 
     const playerEntity = new Entity();
