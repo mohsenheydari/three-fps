@@ -45,6 +45,7 @@ Art assets used in this project:
 * [Ak47](https://skfb.ly/6UEL9) by [kursat_sokmen](https://sketchfab.com/kursat_sokmen) is licensed under CC BY 4.0
 * [Metal Ammo Box](https://skfb.ly/6UAQY) by [TheoClarke](https://sketchfab.com/TheoClarke) is licensed under CC BY 4.0
 * [Mutant](https://mixamo.com) by [mixamo.com](https://mixamo.com)
+* [Veld Fire](https://hdrihaven.com/hdri/?h=veld_fire) by [Greg Zaal](https://hdrihaven.com/hdris/?a=Greg%20Zaal) is licensed under CC0
 
 ## Thanks to
 * [Three Seed](https://github.com/edwinwebb/three-seed)

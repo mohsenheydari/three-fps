@@ -255,12 +255,12 @@ class FPSGameApp{
     playerEntity.AddComponent(new PlayerControls(this.camera, this.scene));
     playerEntity.AddComponent(new Weapon(this.camera, this.assets['ak47'].scene, this.assets['muzzleFlash'], this.physicsWorld, this.assets['ak47Shot'], this.listener ));
     playerEntity.AddComponent(new PlayerHealth());
+    playerEntity.SetPosition(new THREE.Vector3(2.14, 1.48, -1.36));
+    playerEntity.SetRotation(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0), -Math.PI * 0.5));
     this.entityManager.Add(playerEntity);
 
     const npcLocations = [
-      [-22.5, 0.3, -21.9],
-      //[-16, 0.3, 0.61],
-      //[19.91, 0.3, 1.32],
+      [10.8, 0.0, 22.0],
     ];
 
     npcLocations.forEach((v,i)=>{
@@ -280,8 +280,8 @@ class FPSGameApp{
     this.entityManager.Add(uimanagerEntity);
 
     const ammoLocations = [
-      [-5.0, 0.33, 10.0],
-      [5.0, 0.33, -10.0],
+       [14.37, 0.0, 10.45],
+       [32.77, 0.0, 33.84],
     ];
 
     ammoLocations.forEach((loc, i) => {

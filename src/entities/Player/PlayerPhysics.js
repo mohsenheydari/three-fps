@@ -23,7 +23,8 @@ export default class PlayerPhysics extends Component{
 
         const transform = new Ammo.btTransform();
         transform.setIdentity();
-        transform.setOrigin(new Ammo.btVector3(0,5,0));
+        const pos = this.parent.Position;
+        transform.setOrigin(new Ammo.btVector3(pos.x,pos.y,pos.z));
         const motionState = new Ammo.btDefaultMotionState(transform);
 
         const shape = new Ammo.btCapsuleShape(radius, height);

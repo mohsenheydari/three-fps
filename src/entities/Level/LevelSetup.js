@@ -1,5 +1,5 @@
 import Component from '../../Component'
-
+import * as THREE from 'three'
 import {Ammo, createConvexHullShape} from '../../AmmoLib'
 
 export default class LevelSetup extends Component{
@@ -30,13 +30,13 @@ export default class LevelSetup extends Component{
                 shadow.mapSize.height = 1024 * 3;
                 shadow.bias = -0.00007;
 
-                const dH = 35, dV = 14;
+                const dH = 35, dV = 35;
                 lightCam.left = -dH;
                 lightCam.right = dH;
                 lightCam.top = dV;
                 lightCam.bottom = -dV;
 
-                //const cameraHelper = new THREE.CameraHelper(node.shadow.camera);
+                //const cameraHelper = new THREE.CameraHelper(lightCam);
                 //this.scene.add(cameraHelper);
             }
         });

@@ -23,7 +23,7 @@ export default class PlayerControls extends Component{
         this.physicsComponent = null;
         this.isLocked = false;
 
-        this.angles = new THREE.Vector2();
+        this.angles = new THREE.Euler();
         this.pitch = new THREE.Quaternion();
         this.yaw = new THREE.Quaternion();
 
@@ -40,6 +40,8 @@ export default class PlayerControls extends Component{
         this.physicsBody = this.physicsComponent.body;
         this.transform = new Ammo.btTransform();
         this.zeroVec = new Ammo.btVector3(0.0, 0.0, 0.0);
+        this.angles.setFromQuaternion(this.parent.Rotation);
+        this.UpdateRotation();
 
         Input.AddMouseMoveListner(this.OnMouseMove);
 
@@ -68,13 +70,17 @@ export default class PlayerControls extends Component{
     
         const { movementX, movementY } = event
     
-        this.angles.x -= movementX * this.mouseSpeed;
-        this.angles.y -= movementY * this.mouseSpeed;
+        this.angles.y -= movementX * this.mouseSpeed;
+        this.angles.x -= movementY * this.mouseSpeed;
 
-        this.angles.y = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.angles.y));
+        this.angles.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.angles.x));
 
-        this.pitch.setFromAxisAngle(this.xAxis, this.angles.y);
-        this.yaw.setFromAxisAngle(this.yAxis, this.angles.x);
+        this.UpdateRotation();
+    }
+
+    UpdateRotation(){
+        this.pitch.setFromAxisAngle(this.xAxis, this.angles.x);
+        this.yaw.setFromAxisAngle(this.yAxis, this.angles.y);
 
         this.parent.Rotation.multiplyQuaternions(this.yaw, this.pitch).normalize();
 
