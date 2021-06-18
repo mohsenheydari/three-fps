@@ -214,8 +214,6 @@ export default class CharacterController extends Component{
         this.lastPos.copy(this.rootBone.position);
         this.rootBone.position.z = this.rootBone.refPos.z;
         this.rootBone.position.x = this.rootBone.refPos.x;
-
-        this.parent.SetPosition(this.model.position);
     }
 
     Update(t){
@@ -227,5 +225,6 @@ export default class CharacterController extends Component{
         this.stateMachine.Update(t);
 
         this.parent.SetRotation(this.model.quaternion);
+        this.parent.SetPosition(this.model.position);
     }
 }

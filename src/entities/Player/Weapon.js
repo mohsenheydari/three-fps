@@ -68,8 +68,7 @@ export default class Weapon extends Component{
         const scene = this.model;
         scene.scale.set(0.05, 0.05, 0.05);
         scene.position.set(0.04, -0.02, 0.0);
-        scene.rotateX((Math.PI / 180) * 5);
-        scene.rotateY((Math.PI / 180) * 185);
+        scene.setRotationFromEuler(new THREE.Euler(THREE.MathUtils.degToRad(5), THREE.MathUtils.degToRad(185), 0));
 
         scene.traverse(child=>{
             if(!child.isSkinnedMesh){

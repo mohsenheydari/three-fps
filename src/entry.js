@@ -21,6 +21,7 @@ import {  GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import {  OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import {  SkeletonUtils } from 'three/examples/jsm/utils/SkeletonUtils'
 import NpcCharacterController from './entities/NPC/CharacterController'
+import Input from './Input'
 
 import level from './assets/level.glb'
 import navmesh from './assets/navmesh.obj'
@@ -68,22 +69,21 @@ import PlayerHealth from './entities/Player/PlayerHealth'
 class FPSGameApp{
 
   constructor(){
-    this.scene = new THREE.Scene();
     this.lastFrameTime = null;
     this.assets = {};
+    this.animFrameId = 0;
 
     AmmoHelper.Init(()=>{this.Init();});
   }
 
   Init(){
-    this.SetupPhysics();
-    this.SetupGraphics();
     this.LoadAssets();
+    this.SetupGraphics();
+    this.SetupStartButton();
   }
 
   SetupGraphics(){
-    this.camera = new THREE.PerspectiveCamera();
-    this.camera.near = 0.01;
+    this.scene = new THREE.Scene();
     this.renderer = new THREE.WebGLRenderer({antialias: true});
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -92,7 +92,8 @@ class FPSGameApp{
 		this.renderer.toneMappingExposure = 1;
 		this.renderer.outputEncoding = THREE.sRGBEncoding;
 
-    this.scene.add(this.camera);
+    this.camera = new THREE.PerspectiveCamera();
+    this.camera.near = 0.01;
 
     // create an AudioListener and add it to the camera
     this.listener = new THREE.AudioListener();
@@ -124,8 +125,8 @@ class FPSGameApp{
     this.physicsWorld.getBroadphase().getOverlappingPairCache().setInternalGhostPairCallback(new Ammo.btGhostPairCallback());
 
     //Physics debug drawer
-    this.debugDrawer = new DebugDrawer(this.scene, this.physicsWorld);
-    this.debugDrawer.enable();
+    //this.debugDrawer = new DebugDrawer(this.scene, this.physicsWorld);
+    //this.debugDrawer.enable();
   }
 
   SetAnim(name, obj){
@@ -158,6 +159,14 @@ class FPSGameApp{
 
   HideProgress(){
     this.OnProgress(0);
+  }
+
+  SetupStartButton(){
+    document.getElementById('start_game').addEventListener('click', this.StartGame);
+  }
+
+  ShowMenu(visible=true){
+    document.getElementById('menu').style.visibility = visible?'visible':'hidden';
   }
 
   async LoadAssets(){
@@ -231,7 +240,8 @@ class FPSGameApp{
 
     this.assets['ammoboxShape'] = createConvexHullShape(this.assets['ammobox']);
 
-    this.EntitySetup();
+    this.HideProgress();
+    this.ShowMenu();
   }
 
   EntitySetup(){
@@ -293,9 +303,20 @@ class FPSGameApp{
     });
 
     this.entityManager.EndSetup();
-    this.HideProgress();
 
-    window.requestAnimationFrame(this.OnAnimationFrameHandler);
+    this.scene.add(this.camera);
+    this.animFrameId = window.requestAnimationFrame(this.OnAnimationFrameHandler);
+  }
+
+  StartGame = ()=>{
+    window.cancelAnimationFrame(this.animFrameId);
+    Input.ClearEventListners();
+
+    //Create entities and physics
+    this.scene.clear();
+    this.SetupPhysics();
+    this.EntitySetup();
+    this.ShowMenu(false);
   }
 
   // resize
@@ -317,7 +338,7 @@ class FPSGameApp{
     this.Step(timeElapsed);
     this.lastFrameTime = t;
 
-    window.requestAnimationFrame(this.OnAnimationFrameHandler);
+    this.animFrameId = window.requestAnimationFrame(this.OnAnimationFrameHandler);
   }
 
   PhysicsUpdate = (world, timeStep)=>{
