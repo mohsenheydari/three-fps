@@ -25,13 +25,13 @@ npm install
 ```
 
 ## Running the development server
-To see the changes you make to the starter project go to the project folder in terminal and type...
+To see the changes you make to the project go to the project's folder in terminal and type...
 
 ```bash
 npm start
 ```
 
-This command will bundle the project code and start a development server at [http://localhost:8080/](http://localhost:8080/). Visit this in your web browser; you should see a rotating island and flower.
+This command will bundle the project code and start a development server at [http://localhost:8080/](http://localhost:8080/). Visit this in your web browser.
 
 ## Editing the code
 The first file you should open is `./src/entry.js`. In it you will find the main application class. This class is reponsible for initializing the libraries and loading art assets, it also handles the main game loop.
